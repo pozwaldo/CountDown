@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BABY_COUNTDOWN.EXE</title>
+<link rel="stylesheet" href="https://unpkg.com/98.css">
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    background-color: #008080;
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.04) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.04) 75%);
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 14px 74px;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 460px;
+  }
+
+  .titlebar-icon {
+    margin-right: 6px;
+  }
+
+  fieldset {
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  fieldset:first-of-type {
+    margin-top: 4px;
+  }
+
+  legend {
+    padding: 0 4px;
+  }
+
+  .lcd-panel {
+    background: #0a1a0a;
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .lcd-number {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 2.6rem;
+    color: #5cff5c;
+    text-shadow: 0 0 6px rgba(92,255,92,0.55);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .lcd-caption {
+    font-family: 'Courier New', monospace;
+    color: #8fd98f;
+    font-size: 0.75rem;
+    margin-top: 6px;
+  }
+
+  .due-note {
+    text-align: center;
+    font-size: 12px;
+    margin: 8px 0 2px;
+  }
+
+  .week-readout {
+    font-weight: bold;
+    font-size: 15px;
+    margin: 2px 0 10px;
+  }
+
+  .progress-indicator {
+    margin-bottom: 8px;
+  }
+
+  .progress-caption {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .trimester-line {
+    font-size: 12px;
+  }
+
+  .size-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .size-emoji {
+    font-size: 2.6rem;
+    background: #ffffff;
+    border: 2px inset #808080;
+    padding: 6px 10px;
+    line-height: 1;
+  }
+
+  .size-text p {
+    margin: 2px 0;
+    font-size: 12px;
+  }
+
+  .size-text .size-name {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .win-taskbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 34px;
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    display: flex;
+    align-items: center;
+    padding: 3px 4px;
+    gap: 6px;
+  }
+
+  .win-taskbar .btn {
+    font-weight: bold;
+    font-size: 13px;
+    padding: 2px 10px 2px 6px;
+  }
+
+  .taskbar-clock {
+    margin-left: auto;
+    border: 1px inset #808080;
+    background: #c0c0c0;
+    padding: 3px 10px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 420px) {
+    .lcd-number { font-size: 2rem; }
+    .size-row { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <div class="title-bar">
+    <div class="title-bar-text">BABY_COUNTDOWN.EXE</div>
+    <div class="title-bar-controls">
+      <button aria-label="Minimize"></button>
+      <button aria-label="Maximize"></button>
+      <button aria-label="Close"></button>
+    </div>
+  </div>
+
+  <div class="window-body">
+
+    <p style="text-align:center; margin: 8px 0 2px; font-weight: bold;">Little One's Countdown</p>
+    <p style="text-align:center; margin: 0 0 10px; font-size: 11px; font-style: italic;">status: still cooking</p>
+
+    <fieldset>
+      <legend>Due Date Countdown</legend>
+      <div class="lcd-panel">
+        <div class="lcd-number" id="daysToGo">----</div>
+        <div class="lcd-caption" id="countdownLabel">DAYS UNTIL ARRIVAL</div>
+      </div>
+      <p class="due-note">Due date: <strong>March 19, 2027</strong></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Current Progress</legend>
+      <p class="week-readout" id="weekReadout">Week -- &middot; Day --</p>
+      <div class="progress-indicator segmented">
+        <span class="progress-indicator-bar" id="progressFill" style="width: 0%;"></span>
+      </div>
+      <div class="progress-caption">
+        <span>Week 0</span>
+        <span>Week 40</span>
+      </div>
+      <p class="trimester-line">Currently in: <strong id="trimesterBadge">Trimester --</strong></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Size Check</legend>
+      <div class="size-row">
+        <div class="size-emoji" id="sizeEmoji">&#127819;</div>
+        <div class="size-text">
+          <p>about the size of a:</p>
+          <p class="size-name" id="sizeName">lemon</p>
+          <p id="sizeNote">Working hard on eyebrows and a strong opinion about naps.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="status-bar">
+      <p class="status-bar-field">Made with HTML &amp; sleep deprivation</p>
+      <p class="status-bar-field" id="todayField">--/--/----</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="win-taskbar">
+  <button class="btn">&#8862; Start</button>
+  <div class="taskbar-clock" id="taskbarClock">--:--</div>
+</div>
+
+<script>
+  // Anchor point: September 19, 2026 is the first day of week 14.
+  const anchorDate = new Date(2026, 8, 19);
+  anchorDate.setHours(0,0,0,0);
+  const anchorWeek = 14;
+
+  const dueDate = new Date(2027, 2, 19);
+  dueDate.setHours(0,0,0,0);
+
+  const today = new Date();
+  const todayMidnight = new Date(today);
+  todayMidnight.setHours(0,0,0,0);
+
+  const MS_PER_DAY = 86400000;
+
+  function daysBetween(a, b) {
+    return Math.round((b - a) / MS_PER_DAY);
+  }
+
+  // --- Countdown to due date ---
+  const daysToGo = daysBetween(todayMidnight, dueDate);
+  const daysToGoEl = document.getElementById('daysToGo');
+  const labelEl = document.getElementById('countdownLabel');
+
+  if (daysToGo > 0) {
+    daysToGoEl.textContent = daysToGo;
+    labelEl.textContent = 'DAYS UNTIL ARRIVAL';
+  } else if (daysToGo === 0) {
+    daysToGoEl.textContent = '0';
+    labelEl.textContent = 'TODAY IS THE DAY';
+  } else {
+    daysToGoEl.textContent = Math.abs(daysToGo);
+    labelEl.textContent = 'DAYS SINCE ARRIVAL';
+  }
+
+  // --- Week tracker ---
+  const daysSinceAnchor = daysBetween(anchorDate, todayMidnight);
+  const gestDaysAtAnchor = (anchorWeek - 1) * 7;
+  const totalGestDays = gestDaysAtAnchor + daysSinceAnchor;
+
+  const currentWeek = Math.max(1, Math.floor(totalGestDays / 7) + 1);
+  const currentDayInWeek = ((totalGestDays % 7) + 7) % 7 + 1;
+
+  document.getElementById('weekReadout').textContent =
+    'Week ' + currentWeek + ' \u00B7 Day ' + currentDayInWeek;
+
+  const progressPct = Math.min(100, Math.max(0, (currentWeek / 40) * 100));
+  document.getElementById('progressFill').style.width = progressPct + '%';
+
+  let trimester = 1;
+  if (currentWeek > 27) trimester = 3;
+  else if (currentWeek > 13) trimester = 2;
+  document.getElementById('trimesterBadge').textContent = 'Trimester ' + trimester;
+
+  // --- Size comparison ---
+  const sizes = {
+    4:  ['\uD83C\uDF31', 'poppy seed', 'Barely there, already causing chaos.'],
+    5:  ['\uD83C\uDF3E', 'sesame seed', 'Officially a "someone" now.'],
+    6:  ['\uD83E\uDED8', 'lentil', 'Heart just started its lifelong job.'],
+    7:  ['\uD83E\uDED0', 'blueberry', 'Tiny limbs are starting to bud.'],
+    8:  ['\uD83C\uDF47', 'raspberry', 'Basically all head and ambition.'],
+    9:  ['\uD83C\uDF47', 'grape', 'Fingers and toes forming, future foot-in-mouth expert.'],
+    10: ['\uD83C\uDF4A', 'kumquat', 'Vital organs clocking in for their first shift.'],
+    11: ['\uD83C\uDF30', 'fig', 'Kicking practice begins, mostly unfelt.'],
+    12: ['\uD83C\uDF4B', 'lime', 'Reflexes online. Fists: also online.'],
+    13: ['\uD83E\uDED8', 'pea pod', 'Fingerprints forming, a whole tiny identity.'],
+    14: ['\uD83C\uDF4B', 'lemon', 'Working hard on eyebrows and a strong opinion about naps.'],
+    15: ['\uD83C\uDF4E', 'apple', 'Can sense light. Judging the room already.'],
+    16: ['\uD83E\uDD51', 'avocado', 'Might be able to make a fist. Solidarity.'],
+    17: ['\uD83E\uDD54', 'turnip', 'Practicing swallowing, hiccups included.'],
+    18: ['\uD83E\uDED1', 'bell pepper', 'Ears in position, the eavesdropping begins.'],
+    19: ['\uD83C\uDF45', 'heirloom tomato', 'Growing a protective waxy coating, like a tiny raincoat.'],
+    20: ['\uD83C\uDF4C', 'banana', 'Halfway there. Time to double the snacks.'],
+    21: ['\uD83E\uDD55', 'carrot', 'Movements getting stronger and much more noticeable.'],
+    22: ['\uD83C\uDF5D', 'spaghetti squash', 'Eyebrows and eyelids fully formed.'],
+    23: ['\uD83E\uDD6D', 'large mango', 'Hearing improving, start curating the playlist.'],
+    24: ['\uD83C\uDF3D', 'corn cob', 'Face is basically fully formed. Hello in there.'],
+    25: ['\uD83E\uDD54', 'rutabaga', 'Getting a little chubbier by the week.'],
+    26: ['\uD83E\uDDC5', 'bunch of scallions', 'Eyes opening for the first time.'],
+    27: ['\uD83E\uDD66', 'cauliflower', 'Officially closing out the second trimester.'],
+    28: ['\uD83C\uDF46', 'eggplant', 'Can blink now. Judging the room, confirmed.'],
+    29: ['\uD83C\uDF83', 'butternut squash', 'Muscles and lungs getting stronger daily.'],
+    30: ['\uD83E\uDD6C', 'cabbage', 'Brain developing at a rapid pace.'],
+    31: ['\uD83E\uDD65', 'coconut', 'Kicks strong enough to be a whole event.'],
+    32: ['\uD83C\uDF4D', 'jicama', 'Practicing breathing, dress rehearsal underway.'],
+    33: ['\uD83C\uDF4D', 'pineapple', 'Bones hardening, skull staying flexible on purpose.'],
+    34: ['\uD83C\uDF48', 'cantaloupe', 'Fingernails fully grown in.'],
+    35: ['\uD83C\uDF48', 'honeydew melon', 'Kidneys fully developed, taking on liver duties too.'],
+    36: ['\uD83E\uDD57', 'head of romaine', 'Settling into position, hopefully head-down.'],
+    37: ['\uD83E\uDD6C', 'bunch of chard', 'Considered early term as of this week.'],
+    38: ['\uD83E\uDD52', 'leek', 'Losing that fine baby hair, gaining grip strength.'],
+    39: ['\uD83C\uDF49', 'mini watermelon', 'Fully baked and just topping off reserves.'],
+    40: ['\uD83C\uDF83', 'small pumpkin', 'Due date week, any day now.'],
+    41: ['\uD83C\uDF49', 'large watermelon', 'Fashionably late, taking their sweet time.'],
+    42: ['\uD83C\uDF49', 'extra-large watermelon', 'Very over the eviction notice by now.']
+  };
+
+  const clampedWeek = Math.min(42, Math.max(4, currentWeek));
+  const sizeInfo = sizes[clampedWeek];
+  document.getElementById('sizeEmoji').textContent = sizeInfo[0];
+  document.getElementById('sizeName').textContent = sizeInfo[1];
+  document.getElementById('sizeNote').textContent = sizeInfo[2];
+
+  // --- Status bar date + taskbar clock ---
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  document.getElementById('todayField').textContent =
+    pad(todayMidnight.getMonth() + 1) + '/' + pad(todayMidnight.getDate()) + '/' + todayMidnight.getFullYear();
+
+  function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    if (hours === 0) hours = 12;
+    document.getElementById('taskbarClock').textContent =
+      hours + ':' + pad(now.getMinutes()) + ' ' + ampm;
+  }
+  updateClock();
+  setInterval(updateClock, 15000);
+</script>
+
+</body>
+</html>
