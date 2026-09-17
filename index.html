@@ -3,182 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BABY_COUNTDOWN.EXE</title>
-<link rel="stylesheet" href="https://unpkg.com/98.css">
+<title>Little One's Countdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
+  :root{
+    --cream: #FBF3E7;
+    --mint: #DCEEE0;
+    --mint-deep: #AEDABB;
+    --peach: #F7D9C4;
+    --peach-deep: #EFBE97;
+    --teal: #2F5D50;
+    --teal-soft: #4C7A6C;
+    --yellow: #F6C453;
+    --brown: #4A3F35;
+    --white: #FFFFFF;
+  }
+
   * { box-sizing: border-box; }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
 
-  body {
-    background-color: #008080;
+  body{
+    font-family: 'Inter', sans-serif;
+    color: var(--brown);
+    background-color: var(--cream);
     background-image:
-      linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
-      linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.04) 75%),
-      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.04) 75%);
-    background-size: 24px 24px;
-    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+      radial-gradient(var(--mint-deep) 1.4px, transparent 1.4px),
+      radial-gradient(var(--peach) 1.4px, transparent 1.4px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 24px 14px 74px;
+    padding: 40px 16px 56px;
   }
 
-  .window {
+  .win {
     width: 100%;
     max-width: 460px;
   }
 
-  .titlebar-icon {
-    margin-right: 6px;
+  /* --- title bar --- */
+  .title-bar{
+    background: linear-gradient(100deg, var(--peach) 0%, var(--mint) 100%);
+    border: 2px solid var(--teal);
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  fieldset {
-    margin-top: 12px;
-    margin-bottom: 4px;
+  .title-bar svg{ width: 18px; height: 18px; flex-shrink: 0; }
+
+  .title-bar-text{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--teal);
   }
 
-  fieldset:first-of-type {
-    margin-top: 4px;
+  .title-bar-dots{
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+  }
+  .title-bar-dots span{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(47,93,80,0.35);
+    display: block;
   }
 
-  legend {
-    padding: 0 4px;
+  /* --- window body --- */
+  .window-body{
+    background: var(--white);
+    border: 2px solid var(--teal);
+    border-radius: 0 0 16px 16px;
+    padding: 22px 22px 18px;
+    box-shadow: 0 14px 30px -18px rgba(74, 63, 53, 0.4);
   }
 
-  .lcd-panel {
-    background: #0a1a0a;
-    padding: 14px 10px;
+  .intro{
+    text-align: center;
+    margin: 0 0 16px;
+  }
+
+  h1{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--teal);
+    margin: 0 0 4px;
+  }
+
+  .subtitle{
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--teal-soft);
+    margin: 0;
+  }
+
+  /* --- grouped panels (soft fieldset look) --- */
+  fieldset{
+    border: 2px solid var(--mint-deep);
+    border-radius: 14px;
+    margin: 0 0 16px;
+    padding: 18px 16px 16px;
+    position: relative;
+  }
+
+  legend{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--teal);
+    background: var(--peach);
+    padding: 3px 12px;
+    border-radius: 999px;
+    margin-left: 4px;
+  }
+
+  /* --- LCD-style counter, softened --- */
+  .lcd-panel{
+    background: var(--cream);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 6px rgba(74,63,53,0.15);
+    padding: 16px 10px;
     text-align: center;
   }
 
-  .lcd-number {
+  .lcd-number{
     font-family: 'Courier New', monospace;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 2.6rem;
-    color: #5cff5c;
-    text-shadow: 0 0 6px rgba(92,255,92,0.55);
+    color: var(--teal);
     letter-spacing: 2px;
     line-height: 1;
   }
 
-  .lcd-caption {
-    font-family: 'Courier New', monospace;
-    color: #8fd98f;
-    font-size: 0.75rem;
+  .lcd-caption{
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    color: var(--teal-soft);
     margin-top: 6px;
   }
 
-  .due-note {
+  .due-note{
     text-align: center;
-    font-size: 12px;
-    margin: 8px 0 2px;
+    font-size: 0.85rem;
+    margin: 12px 0 0;
+    color: var(--teal-soft);
   }
 
-  .week-readout {
-    font-weight: bold;
-    font-size: 15px;
-    margin: 2px 0 10px;
+  .due-note strong{ color: var(--teal); }
+
+  /* --- week tracker --- */
+  .week-readout{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: var(--brown);
+    margin: 0 0 12px;
+    text-align: center;
   }
 
-  .progress-indicator {
-    margin-bottom: 8px;
+  .progress-track{
+    width: 100%;
+    height: 18px;
+    background: var(--mint);
+    border-radius: 999px;
+    overflow: hidden;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
   }
 
-  .progress-caption {
+  .progress-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--yellow), var(--peach-deep));
+    border-radius: 999px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-caption{
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
-    margin-bottom: 10px;
+    font-size: 0.75rem;
+    color: var(--teal-soft);
+    margin-top: 8px;
   }
 
-  .trimester-line {
-    font-size: 12px;
+  .trimester-line{
+    text-align: center;
+    font-size: 0.85rem;
+    margin: 12px 0 0;
   }
 
-  .size-row {
+  .trimester-badge{
+    font-size: 0.78rem;
+    background: var(--mint);
+    color: var(--teal);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  /* --- size check --- */
+  .size-row{
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
   }
 
-  .size-emoji {
+  .size-emoji{
     font-size: 2.6rem;
-    background: #ffffff;
-    border: 2px inset #808080;
-    padding: 6px 10px;
     line-height: 1;
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 10px 14px;
+    flex-shrink: 0;
   }
 
-  .size-text p {
-    margin: 2px 0;
-    font-size: 12px;
+  @media (prefers-reduced-motion: no-preference){
+    .size-emoji{ animation: sway 3.4s ease-in-out infinite; display: inline-block; transform-origin: 50% 85%; }
+  }
+  @keyframes sway{ 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+
+  .size-text p{ margin: 2px 0; font-size: 0.9rem; color: var(--teal-soft); }
+  .size-text .size-name{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--brown);
   }
 
-  .size-text .size-name {
-    font-weight: bold;
-    font-size: 14px;
+  footer{
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--teal-soft);
+    margin-top: 16px;
+    line-height: 1.6;
   }
 
-  .win-taskbar {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 34px;
-    background: #c0c0c0;
-    border-top: 2px solid #ffffff;
-    display: flex;
-    align-items: center;
-    padding: 3px 4px;
-    gap: 6px;
+  footer .signoff{
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 600;
+    color: var(--teal);
+    font-size: 0.9rem;
   }
 
-  .win-taskbar .btn {
-    font-weight: bold;
-    font-size: 13px;
-    padding: 2px 10px 2px 6px;
-  }
-
-  .taskbar-clock {
-    margin-left: auto;
-    border: 1px inset #808080;
-    background: #c0c0c0;
-    padding: 3px 10px;
-    font-size: 12px;
-  }
-
-  @media (max-width: 420px) {
-    .lcd-number { font-size: 2rem; }
-    .size-row { flex-direction: column; text-align: center; }
+  @media (max-width: 420px){
+    .lcd-number{ font-size: 2.1rem; }
+    .window-body{ padding: 18px 16px 14px; }
+    .size-row{ flex-direction: column; text-align: center; }
   }
 </style>
 </head>
 <body>
 
-<div class="window">
+<div class="win">
+
   <div class="title-bar">
-    <div class="title-bar-text">BABY_COUNTDOWN.EXE</div>
-    <div class="title-bar-controls">
-      <button aria-label="Minimize"></button>
-      <button aria-label="Maximize"></button>
-      <button aria-label="Close"></button>
-    </div>
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.7-9.8-9.2C.6 8.2 2.4 4.8 5.7 4.2c2-.4 3.9.5 5 2.1 1.1-1.6 3-2.5 5-2.1 3.3.6 5.1 4 3.5 7.6C19.5 16.3 12 21 12 21z" fill="#2F5D50"/></svg>
+    <span class="title-bar-text">baby_countdown</span>
+    <div class="title-bar-dots"><span></span><span></span><span></span></div>
   </div>
 
   <div class="window-body">
 
-    <p style="text-align:center; margin: 8px 0 2px; font-weight: bold;">Little One's Countdown</p>
-    <p style="text-align:center; margin: 0 0 10px; font-size: 11px; font-style: italic;">status: still cooking</p>
+    <div class="intro">
+      <h1>Little One's Countdown</h1>
+      <p class="subtitle">status: still cooking</p>
+    </div>
 
     <fieldset>
-      <legend>Due Date Countdown</legend>
+      <legend>due date countdown</legend>
       <div class="lcd-panel">
         <div class="lcd-number" id="daysToGo">----</div>
         <div class="lcd-caption" id="countdownLabel">DAYS UNTIL ARRIVAL</div>
@@ -187,20 +290,20 @@
     </fieldset>
 
     <fieldset>
-      <legend>Current Progress</legend>
+      <legend>current progress</legend>
       <p class="week-readout" id="weekReadout">Week -- &middot; Day --</p>
-      <div class="progress-indicator segmented">
-        <span class="progress-indicator-bar" id="progressFill" style="width: 0%;"></span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
       </div>
       <div class="progress-caption">
         <span>Week 0</span>
         <span>Week 40</span>
       </div>
-      <p class="trimester-line">Currently in: <strong id="trimesterBadge">Trimester --</strong></p>
+      <p class="trimester-line"><span class="trimester-badge" id="trimesterBadge">Trimester --</span></p>
     </fieldset>
 
     <fieldset>
-      <legend>Size Check</legend>
+      <legend>size check</legend>
       <div class="size-row">
         <div class="size-emoji" id="sizeEmoji">&#127819;</div>
         <div class="size-text">
@@ -211,17 +314,7 @@
       </div>
     </fieldset>
 
-    <div class="status-bar">
-      <p class="status-bar-field">Made with HTML &amp; sleep deprivation</p>
-      <p class="status-bar-field" id="todayField">--/--/----</p>
-    </div>
-
   </div>
-</div>
-
-<div class="win-taskbar">
-  <button class="btn">&#8862; Start</button>
-  <div class="taskbar-clock" id="taskbarClock">--:--</div>
 </div>
 
 <script>
@@ -234,17 +327,13 @@
   dueDate.setHours(0,0,0,0);
 
   const today = new Date();
-  const todayMidnight = new Date(today);
-  todayMidnight.setHours(0,0,0,0);
+  today.setHours(0,0,0,0);
 
   const MS_PER_DAY = 86400000;
-
-  function daysBetween(a, b) {
-    return Math.round((b - a) / MS_PER_DAY);
-  }
+  function daysBetween(a, b) { return Math.round((b - a) / MS_PER_DAY); }
 
   // --- Countdown to due date ---
-  const daysToGo = daysBetween(todayMidnight, dueDate);
+  const daysToGo = daysBetween(today, dueDate);
   const daysToGoEl = document.getElementById('daysToGo');
   const labelEl = document.getElementById('countdownLabel');
 
@@ -260,7 +349,7 @@
   }
 
   // --- Week tracker ---
-  const daysSinceAnchor = daysBetween(anchorDate, todayMidnight);
+  const daysSinceAnchor = daysBetween(anchorDate, today);
   const gestDaysAtAnchor = (anchorWeek - 1) * 7;
   const totalGestDays = gestDaysAtAnchor + daysSinceAnchor;
 
@@ -326,23 +415,6 @@
   document.getElementById('sizeEmoji').textContent = sizeInfo[0];
   document.getElementById('sizeName').textContent = sizeInfo[1];
   document.getElementById('sizeNote').textContent = sizeInfo[2];
-
-  // --- Status bar date + taskbar clock ---
-  function pad(n) { return n < 10 ? '0' + n : n; }
-  document.getElementById('todayField').textContent =
-    pad(todayMidnight.getMonth() + 1) + '/' + pad(todayMidnight.getDate()) + '/' + todayMidnight.getFullYear();
-
-  function updateClock() {
-    const now = new Date();
-    let hours = now.getHours();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    if (hours === 0) hours = 12;
-    document.getElementById('taskbarClock').textContent =
-      hours + ':' + pad(now.getMinutes()) + ' ' + ampm;
-  }
-  updateClock();
-  setInterval(updateClock, 15000);
 </script>
 
 </body>
